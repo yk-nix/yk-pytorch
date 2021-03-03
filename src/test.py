@@ -71,7 +71,6 @@ if __name__ == '__main__':
     cifa = Cifa10DataLoader(32, download=False)
     classes = ('plane', 'car', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck')
-    print(cifa.trainDataloader
     '''
     i = 0
     while True:
@@ -79,13 +78,6 @@ if __name__ == '__main__':
         print(classes[cifa.trainImages[i][1]])
         i += 1
         input('')
-    '''
-    '''
-    while True:        
-        print('test-image-idx: %03d'%(idx))
-        doTest(idx)
-        input('')
-        idx += 1
     '''
         
      

@@ -7,6 +7,7 @@ Created on Sat Feb 27 13:34:25 2021
 import torch
 import torch.nn.functional as F
 
+
 class FullConnectedNetModel(torch.nn.Module):
     def __init__(self, in_featuers, out_features):
         super(FullConnectedNetModel, self).__init__()
@@ -43,14 +44,15 @@ class ConvolutionalNetModel(torch.nn.Module):
         self.maxPooling = torch.nn.MaxPool2d(2)
         width = int(width / 4)
         height = int(height / 4)
-        self.linear = torch.nn.Linear(20 * width * height, out_features)
+        self.fc = FullConnectedNetModel(20 * width * height, out_features)
+        #self.linear = torch.nn.Linear(20 * width * height, out_features)
         
     def forward(self, x):
         batch_size = x.size(0)
         x = F.relu(self.maxPooling(self.conv1(x)))
         x = F.relu(self.maxPooling(self.conv2(x)))
         x = x.view(batch_size, -1)
-        return self.linear(x)
+        return self.fc(x)
 
 
     
@@ -113,7 +115,8 @@ class InceptionConvolutionalNetModel(torch.nn.Module):
         self.maxPooling = torch.nn.MaxPool2d(2)
         width = int(width / 4)
         height = int(height / 4)
-        self.linear = torch.nn.Linear(88 * width * height, out_features)
+        #self.linear = torch.nn.Linear(88 * width * height, out_features)
+        self.fc = FullConnectedNetModel(88 * width * height, out_features)
         
     def forward(self, x):
         batch_size = x.size(0)
@@ -122,7 +125,7 @@ class InceptionConvolutionalNetModel(torch.nn.Module):
         x = F.relu(self.maxPooling(self.conv2(x)))
         x = self.incept2(x)
         x = x.view(batch_size, -1)
-        return self.linear(x)
+        return self.fc(x)
 
 
 
@@ -161,14 +164,15 @@ class ResidualConvolutionalNetModel(torch.nn.Module):
         self.maxPooling = torch.nn.MaxPool2d(2)
         width = int(width / 4)
         height = int(height / 4)
-        self.linear = torch.nn.Linear(64 * width * height, out_features)
+        #.linear = torch.nn.Linear(64 * width * height, out_features)
+        self.fc = FullConnectedNetModel(32 * width * height, out_features)
         
     def forward(self, x):
         batch_size = x.size(0)
         x = self.maxPooling(F.relu(self.conv1(x)))
         x = self.rblock1(x)
         x = self.maxPooling(F.relu(self.conv2(x)))
-        x = self.rblock2(x)
+        x = self.rblock2(x)        
         x = x.view(batch_size, -1)
-        return self.linear(x)
+        return self.fc(x)
         

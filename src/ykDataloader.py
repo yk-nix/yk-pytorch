@@ -13,17 +13,17 @@ from torch.utils.data import DataLoader
 class ykDataLoader:
     def __init__(self, rootpath, batchSize, getDatasetFunc, datasetName, transform, download):
         self.batchSize = batchSize
-        self.trainImages = getDatasetFunc(root=rootpath + datasetName, 
+        self.trainImages = getDatasetFunc(root=rootpath, 
                                           train=True,
                                           download=download)
-        self.testImages = getDatasetFunc(root='./'+ datasetName,
+        self.testImages = getDatasetFunc(root=rootpath,
                                          train=False,
                                          download=download)
-        self.trainDataset = getDatasetFunc(root='./'+ datasetName,
+        self.trainDataset = getDatasetFunc(root=rootpath,
                                            train=True,
                                            download=download,
                                            transform=transform)
-        self.testDataset = getDatasetFunc(root='./'+ datasetName,
+        self.testDataset = getDatasetFunc(root=rootpath,
                                           train=False,
                                           download=download,
                                           transform=transform)
@@ -34,7 +34,7 @@ class ykDataLoader:
                                          batch_size=batchSize,
                                          shuffle=False)
 class MnistDataLoader(ykDataLoader):
-    def __init__(self, batchSize, rootpath='./' download=True):
+    def __init__(self, batchSize, rootpath, download=True):
         self.transform = transforms.Compose([
                 transforms.ToTensor(),
                 transforms.Normalize((0.1307,), (0.3081,))
@@ -47,7 +47,7 @@ class MnistDataLoader(ykDataLoader):
                                               download)
 
 class Cifa10DataLoader(ykDataLoader):
-    def __init__(self, batchSize, rootpath='./', download=True):
+    def __init__(self, batchSize, rootpath, download=True):
         self.transform = transforms.Compose([
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))

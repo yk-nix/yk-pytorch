@@ -30,5 +30,10 @@ def faces_test():
 
 
 if __name__ == '__main__':
-    assert (10 % 4 == 0), 'hello, world'
+    x = np.arange(1, 11, 1)
+    y = 0.23 * x
+    plt.plot(x, y)
+    plt.plot(x, y, 'r.')
+    plt.grid(True)
+    plt.show()
     pass

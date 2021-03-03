@@ -24,7 +24,7 @@ def doTraining(epoch, model, criterion, optimizer, dataloader, printStride, modl
         # Print traing process
         runningLoss += loss.item()
         if i % printStride == printStride - 1:
-            print('[%d, %5d]  loss: %.2f'%(epoch + 1, i + 1, runningLoss/printStride))
+            print('[%d, %5d]  loss: %.4f'%(epoch + 1, i + 1, runningLoss/printStride))
             runningLoss = 0.0
   
 def doTesting(model, dataloader):
@@ -42,7 +42,7 @@ def doTesting(model, dataloader):
 
 def imgClassfierTraining(dataset, model, model_name, epoch, savepath='../save/', printStride=100):
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.5)
     rates = []
     epochs = []
     for i in range(epoch):
@@ -51,9 +51,12 @@ def imgClassfierTraining(dataset, model, model_name, epoch, savepath='../save/',
         doTraining(i, model, criterion, optimizer,
                    dataset.trainDataloader, printStride, model_name, savepath)
         rate = doTesting(model, dataset.testDataloader)
-        epochs.append(i)
+        epochs.append(i + 1)
         rates.append(rate)
     plt.plot(epochs, rates)
+    plt.plot(epochs, rates, 'r.')
+    plt.xticks(epochs)
+    plt.grid(True)
     plt.xlabel('epoch')
     plt.ylabel('accuracy (%)')
     plt.savefig(savepath + model_name + '.png')
@@ -61,16 +64,18 @@ def imgClassfierTraining(dataset, model, model_name, epoch, savepath='../save/',
 
 #from ykModels import FullConnectedNetModel
 #from ykDataloader import MnistDataLoader
-from ykModels import ConvolutionalNetModel
-from ykDataloader import Cifa10DataLoader
+#from ykModels import ConvolutionalNetModel
 #from ykModels import InceptionConvolutionalNetModel
-#from ykModels import ResidualConvolutionalNetModel
+from ykModels import ResidualConvolutionalNetModel
+from ykDataloader import Cifa10DataLoader
+
 if __name__ == '__main__':
-    cifa = Cifa10DataLoader(64, '../', download=False)
+    cifa = Cifa10DataLoader(64, '../data/CIFA10', download=False)
+    #cifa = MnistDataLoader(64, '../data/MNIST', download=False)
     img = np.array(cifa.trainImages[0][0])
     w = img.shape[0]
     h = img.shape[1]
     imgClassfierTraining(cifa,                                  # dataset
-                         ConvolutionalNetModel(3, w, h, 10),    # model
-                         'cifa10-convnet',                      # model name
-                         10)                                    # epoch
+                         ResidualConvolutionalNetModel(3, w, h, 10),    # model
+                         'cifa10-resd-net',                      # model name
+                         20)                                    # epoch
